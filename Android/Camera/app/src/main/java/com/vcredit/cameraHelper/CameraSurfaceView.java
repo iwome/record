@@ -42,7 +42,7 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
         Log.i(TAG, "surfaceDestroyed...");
-        CameraInterface.getInstance(getContext()).doStopCamera();
+        CameraInterface.getInstance().doStopCamera();
     }
 
     public SurfaceHolder getSurfaceHolder() {

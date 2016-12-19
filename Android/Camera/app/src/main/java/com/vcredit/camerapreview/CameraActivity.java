@@ -28,13 +28,13 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_continue:
-                CameraInterface.getInstance(this).doStartPreview(camSurfaceV.getSurfaceHolder());
+                CameraInterface.getInstance().doStartPreview(camSurfaceV.getSurfaceHolder());
                 break;
             case R.id.btn_shift:
-                CameraInterface.getInstance(this).doShiftCamera(camSurfaceV.getSurfaceHolder());
+                CameraInterface.getInstance().doShiftCamera(camSurfaceV.getSurfaceHolder());
                 break;
             case R.id.btn_shutter:
-                CameraInterface.getInstance(this).doTakePicture();
+                CameraInterface.getInstance().doTakePicture();
                 break;
         }
     }
@@ -51,7 +51,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     protected void onPause() {
         super.onPause();
-        CameraInterface.getInstance(CameraActivity.this).doStopCamera();
+        CameraInterface.getInstance().doStopCamera();
     }
 
     @Override
@@ -60,12 +60,12 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
         Thread openThread = new Thread() {
             @Override
             public void run() {
-                CameraInterface.getInstance(CameraActivity.this).doOpenCamera();
+                CameraInterface.getInstance().doOpenCamera();
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         //如果不在主线程，有时会导致黑屏？
-                        CameraInterface.getInstance(CameraActivity.this).doStartPreview(camSurfaceV.getSurfaceHolder());
+                        CameraInterface.getInstance().doStartPreview(camSurfaceV.getSurfaceHolder());
                     }
                 });
             }

@@ -16,7 +16,8 @@
         android:name="com.vcredit.App"
         android:theme="@style/notAnimation">
         <activity android:name=".MainActivity"
-            android:theme="@style/notAnimation">
+            android:theme="@style/notAnimation"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -24,7 +25,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".CameraActivity"
-            android:theme="@style/notAnimation"/>
+            android:theme="@style/notAnimation"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

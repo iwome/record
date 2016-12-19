@@ -1,23 +1,19 @@
 package com.vcredit.cameraHelper;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.ImageFormat;
-import android.graphics.Point;
 import android.hardware.Camera;
 import android.util.Log;
 import android.view.SurfaceHolder;
 
-import com.vcredit.App;
-import com.vcredit.Utils.DisplayUtil;
 import com.vcredit.Utils.FileUtil;
 import com.vcredit.Utils.ImageUtil;
 
 import java.io.IOException;
-import java.util.List;
 
 /**
+ * 用于拍照更能的封装类
  * Created by qiubangbang on 2016/12/12.
  */
 
@@ -28,20 +24,15 @@ public class CameraInterface {
     private Camera.Parameters mParams;
     private boolean isPreviewing = false;
     private static CameraInterface mCameraInterface;
-    private Context context;
     //默认为后摄像头
     private int cameraDirect = Camera.CameraInfo.CAMERA_FACING_BACK;
 
     private CameraInterface() {
     }
 
-    private CameraInterface(Context context) {
-        this.context = context;
-    }
-
-    public static synchronized CameraInterface getInstance(Context context) {
+    public static synchronized CameraInterface getInstance() {
         if (mCameraInterface == null) {
-            mCameraInterface = new CameraInterface(context);
+            mCameraInterface = new CameraInterface();
         }
         return mCameraInterface;
     }
@@ -62,18 +53,19 @@ public class CameraInterface {
             mParams.setPictureFormat(ImageFormat.JPEG);//设置拍照后存储的图片格式
 
 //            设置PreviewSize（预览尺寸）和PictureSize(照片分辨率)
-            Camera.Size pictureSize = CamParaUtil.getInstance().getPropPictureSize(
-                    mParams.getSupportedPictureSizes(), DisplayUtil.getScreenRate(context), 800);
+            Camera.Size pictureSize = CamParaUtil.getInstance().getBestSupportedSize(mParams.getSupportedPictureSizes());
             mParams.setPictureSize(pictureSize.width, pictureSize.height);
-            Camera.Size previewSize = CamParaUtil.getInstance().getPropPreviewSize(
-                    mParams.getSupportedPreviewSizes(), DisplayUtil.getScreenRate(context), 800);
+            Camera.Size previewSize = CamParaUtil.getInstance().getBestSupportedSize(mParams.getSupportedPreviewSizes());
             mParams.setPreviewSize(previewSize.width, previewSize.height);
-            mCamera.setDisplayOrientation(90);
 
 //            CamParaUtil.getInstance().printSupportFocusMode(mParams);
-            //设置连续对焦
-            mParams.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+            //设置连续对焦,并且前摄像头设置这个参数 部分机型报错（不清楚原因）
+            if (cameraDirect == Camera.CameraInfo.CAMERA_FACING_BACK) {
+                mParams.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+            }
             mCamera.setParameters(mParams);
+
+            mCamera.setDisplayOrientation(90);
 
             try {
                 mCamera.setPreviewDisplay(holder);
@@ -105,8 +97,8 @@ public class CameraInterface {
                     doStopCamera();
                     // 打开当前选中的摄像头
                     mCamera = Camera.open(i);
-                    doStartPreview(holder);
                     cameraDirect = cameraInfo.facing;
+                    doStartPreview(holder);
                     break;
                 }
             }

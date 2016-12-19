@@ -1,7 +1,9 @@
 package com.vcredit.cameraHelper;
 
+import android.app.Activity;
 import android.hardware.Camera;
 import android.util.Log;
+import android.view.Surface;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -28,48 +30,18 @@ public class CamParaUtil {
         }
     }
 
-    public Camera.Size getPropPreviewSize(List<Camera.Size> list, float th, int minWidth){
-        Collections.sort(list, sizeComparator);
-
-        int i = 0;
-        for(Camera.Size s:list){
-            if((s.width >= minWidth) && equalRate(s, th)){
-                Log.i(TAG, "PreviewSize:w = " + s.width + "h = " + s.height);
-                break;
+    public Camera.Size getBestSupportedSize(List<Camera.Size> sizes) {
+        // 取能适用的最大的SIZE
+        Camera.Size largestSize = sizes.get(0);
+        int largestArea = sizes.get(0).height * sizes.get(0).width;
+        for (Camera.Size s : sizes) {
+            int area = s.width * s.height;
+            if (area > largestArea) {
+                largestArea = area;
+                largestSize = s;
             }
-            i++;
         }
-        if(i == list.size()){
-            i = 0;//如果没找到，就选最小的size
-        }
-        return list.get(i);
-    }
-    public Camera.Size getPropPictureSize(List<Camera.Size> list, float th, int minWidth){
-        Collections.sort(list, sizeComparator);
-
-        int i = 0;
-        for(Camera.Size s:list){
-            if((s.width >= minWidth) && equalRate(s, th)){
-                Log.i(TAG, "PictureSize : w = " + s.width + "h = " + s.height);
-                break;
-            }
-            i++;
-        }
-        if(i == list.size()){
-            i = 0;//如果没找到，就选最小的size
-        }
-        return list.get(i);
-    }
-
-    public boolean equalRate(Camera.Size s, float rate){
-        float r = (float)(s.width)/(float)(s.height);
-        if(Math.abs(r - rate) <= 0.03)
-        {
-            return true;
-        }
-        else{
-            return false;
-        }
+        return largestSize;
     }
 
     public  class CameraSizeComparator implements Comparator<Camera.Size> {
@@ -119,5 +91,29 @@ public class CamParaUtil {
         for(String mode : focusModes){
             Log.i(TAG, "focusModes--" + mode);
         }
+    }
+
+    // 提供一个静态方法，用于根据手机方向获得相机预览画面旋转的角度
+    public static int getPreviewDegree(Activity activity) {
+        // 获得手机的方向
+        int rotation = activity.getWindowManager().getDefaultDisplay()
+                .getRotation();
+        int degree = 0;
+        // 根据手机的方向计算相机预览画面应该选择的角度
+        switch (rotation) {
+            case Surface.ROTATION_0:
+                degree = 90;
+                break;
+            case Surface.ROTATION_90:
+                degree = 0;
+                break;
+            case Surface.ROTATION_180:
+                degree = 270;
+                break;
+            case Surface.ROTATION_270:
+                degree = 180;
+                break;
+        }
+        return degree;
     }
 }
