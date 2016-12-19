@@ -63,9 +63,9 @@ public class CameraInterface {
             if (cameraDirect == Camera.CameraInfo.CAMERA_FACING_BACK) {
                 mParams.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
             }
+            mCamera.setDisplayOrientation(90);
             mCamera.setParameters(mParams);
 
-            mCamera.setDisplayOrientation(90);
 
             try {
                 mCamera.setPreviewDisplay(holder);

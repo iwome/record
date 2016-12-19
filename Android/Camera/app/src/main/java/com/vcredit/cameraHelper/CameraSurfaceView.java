@@ -24,6 +24,7 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
         mSurfaceHolder = getHolder();
 //        mSurfaceHolder.setFormat(PixelFormat.TRANSPARENT);//translucent半透明 transparent透明
         mSurfaceHolder.setKeepScreenOn(true);// 屏幕常亮
+        //过期 this is ignored, this value is set automatically when needed
         mSurfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         mSurfaceHolder.addCallback(this);
     }
