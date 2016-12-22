@@ -1,5 +1,6 @@
 package com.vcredit.customkeyboard;
 
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -16,6 +17,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 
 import java.lang.reflect.Method;
 
@@ -37,6 +39,7 @@ public class KeyBoardViewHelper implements KeyboardView.OnKeyboardActionListener
     private Button mBtnRecharge;
     private Button mBtnClose;
     private Button mBtnConfirm;
+    private final RelativeLayout mRl;
 
 
     public KeyBoardViewHelper(Activity activity) {
@@ -47,6 +50,7 @@ public class KeyBoardViewHelper implements KeyboardView.OnKeyboardActionListener
         mBtnRecharge = (Button) contentView.findViewById(R.id.btn_recharge);
         mBtnClose = (Button) contentView.findViewById(R.id.btn_close);
         mBtnConfirm = (Button) contentView.findViewById(R.id.btn_confirm);
+        mRl = (RelativeLayout) contentView.findViewById(R.id.rl);
         hideAndroSoftInput(activity);
         popWnd = new PopupWindow(mActivity);
         popWnd.setContentView(contentView);
@@ -60,9 +64,8 @@ public class KeyBoardViewHelper implements KeyboardView.OnKeyboardActionListener
     }
 
     private void setBackground() {
-
+        mRl.setBackgroundColor(0x66000000);
     }
-
 
     private void initKeyBoardView() {
         mkb = new Keyboard(mActivity, R.xml.keyboard_numbers);
@@ -82,8 +85,9 @@ public class KeyBoardViewHelper implements KeyboardView.OnKeyboardActionListener
     public void showKeyboard(View view) {
         if (null != popWnd) {
             //设置activity背景
-            setBackground();
+//            setBackground();
             popWnd.showAtLocation(view, Gravity.BOTTOM, 0, 0);
+            backgroundAlpha(0.6f, 1000);
         }
     }
 
@@ -93,6 +97,7 @@ public class KeyBoardViewHelper implements KeyboardView.OnKeyboardActionListener
     public void closeKeyboard() {
         if (null != popWnd) {
             popWnd.dismiss();
+            backgroundAlpha(0f,0);
         }
     }
 
@@ -209,6 +214,30 @@ public class KeyBoardViewHelper implements KeyboardView.OnKeyboardActionListener
         }
 
         mkbv.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * 设置添加屏幕的背景透明度
+     *
+     * @param bgAlpha
+     */
+    public void backgroundAlpha(final float bgAlpha, int Duration) {
+        final WindowManager.LayoutParams lp = mActivity.getWindow().getAttributes();
+        ValueAnimator animator = ValueAnimator.ofFloat(bgAlpha);
+        animator.setDuration(Duration);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float f = (float) animation.getAnimatedValue();
+                Log.d(TAG, "onAnimationUpdate: " + f);
+                lp.alpha = 1-f; //0.0-1.0
+                mActivity.getWindow().setAttributes(lp);
+                if (f == bgAlpha) {
+                    animation.removeAllUpdateListeners();
+                }
+            }
+        });
+        animator.start();
     }
 
 }
