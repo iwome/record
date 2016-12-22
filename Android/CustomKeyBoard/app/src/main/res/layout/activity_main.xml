@@ -6,34 +6,10 @@
     android:layout_height="match_parent"
     >
 
-    <EditText
-        android:id="@+id/et"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginTop="10dp"
-        android:background="#e6e8ea"
-        android:hint="输入"
-        android:paddingLeft="10dp" />
+<Button
+    android:id="@+id/btn_popus"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="btn_popus"/>
 
-
-    <android.inputmethodservice.KeyboardView
-        android:id="@+id/keyboard"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="5dp"
-        android:background="#EFEFF4"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:keyBackground="@drawable/btn_bg"
-        android:keyTextColor="@android:color/black"
-        android:shadowColor="@android:color/white"
-        android:shadowRadius="0.0"
-        android:visibility="gone" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_above="@id/keyboard"
-        android:background="#EFEFF4" />
 </RelativeLayout>

@@ -1,49 +1,56 @@
 package com.vcredit.customkeyboard;
 
-import android.inputmethodservice.KeyboardView;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.InputType;
+import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowManager;
-import android.widget.EditText;
-
-import java.lang.reflect.Method;
+import android.widget.Button;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
-    private EditText et;
-    private KeyboardView kv;
-    private KeyBoardViewHelper helper;
+    private Button btnPopus;
+    private KeyBoardViewHelper viewHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        et = (EditText) findViewById(R.id.et);
-        if (android.os.Build.VERSION.SDK_INT <= 10) {
-            et.setInputType(InputType.TYPE_NULL);
-        } else {
-            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-            try {
-                Class<EditText> cls = EditText.class;
-                Method setSoftInputShownOnFocus = cls.getMethod("setShowSoftInputOnFocus", boolean.class);
-                setSoftInputShownOnFocus.setAccessible(true);
-                setSoftInputShownOnFocus.invoke(et, false);
-            } catch (Exception e) {
-                e.printStackTrace();
+        btnPopus = (Button) findViewById(R.id.btn_popus);
+        viewHelper = new KeyBoardViewHelper(this);
+        final View rootview = LayoutInflater.from(MainActivity.this).inflate(R.layout.activity_main, null);
+        btnPopus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewHelper.showKeyboard(rootview);
             }
-        }
-        kv = (KeyboardView) findViewById(R.id.keyboard);
-        helper = KeyBoardViewHelper.initHelper(this, et, kv);
+        });
+
+        viewHelper.eventBind(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switch (v.getId()) {
+                    case R.id.btn_close:
+                        viewHelper.closeKeyboard();
+                        break;
+                    case R.id.btn_confirm:
+                        Toast.makeText(MainActivity.this, "btn_confirm", Toast.LENGTH_SHORT).show();
+                        break;
+                    case R.id.btn_recharge:
+                        Toast.makeText(MainActivity.this, "btn_recharge", Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            }
+        });
     }
+
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if(kv.getVisibility()== View.VISIBLE){
-            helper.hideKeyboard();
-        }
+//        if(kv.getVisibility()== View.VISIBLE){
+//            helper.hideKeyboard();
+//        }
         return super.onTouchEvent(event);
     }
 }
