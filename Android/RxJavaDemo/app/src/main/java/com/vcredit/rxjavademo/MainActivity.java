@@ -83,16 +83,32 @@ public class MainActivity extends AppCompatActivity {
         });
 
         /**
-         *
+         * just(T...):  将传入的方法一次发送出来
          */
-        Observable observable1 = Observable.just("Hello", "Hi", "Aloha");
+        Observable observable1 = Observable.just("Observable.just()_Hello", "Observable.just()_Hi", "Observable.just()_Aloha");
         // 将会依次调用：
         // onNext("Hello");
         // onNext("Hi");
         // onNext("Aloha");
         // onCompleted();;
 
-        //订阅
-        observable.subscribe(observer);
+        /**
+         * from(T[]) / from(Iterable<? extends T>) : 将传入的数组或 Iterable 拆分成具体对象后，依次发送出来。
+         */
+        String[] array = new String[]{"Observable.from()_array1", "Observable.from()_array2", "Observable.from()_array3"};
+        Observable observable2 = Observable.from(array);
+
+        /**
+         * 
+         */
+
+        //订阅,6种写法等价
+        observable.subscribe(observer);//observable.subscribe(subscriber);
+        observable1.subscribe(observer);//observable1.subscribe(subscriber);
+        observable2.subscribe(observer);//observable2.subscribe(subscriber);
+
+
+
+
     }
 }
