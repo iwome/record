@@ -24,6 +24,7 @@ import java.lang.reflect.Method;
 import static android.view.WindowManager.LayoutParams.TYPE_APPLICATION_ATTACHED_DIALOG;
 
 /**
+ * 软键盘的初始化 开启关闭 监听事件
  * Created by qiubangbang on 2016/11/18.
  */
 
@@ -39,8 +40,6 @@ public class KeyBoardViewHelper implements KeyboardView.OnKeyboardActionListener
     private Button mBtnRecharge;
     private Button mBtnClose;
     private Button mBtnConfirm;
-    private final RelativeLayout mRl;
-
 
     public KeyBoardViewHelper(Activity activity) {
         mActivity = activity;
@@ -50,7 +49,6 @@ public class KeyBoardViewHelper implements KeyboardView.OnKeyboardActionListener
         mBtnRecharge = (Button) contentView.findViewById(R.id.btn_recharge);
         mBtnClose = (Button) contentView.findViewById(R.id.btn_close);
         mBtnConfirm = (Button) contentView.findViewById(R.id.btn_confirm);
-        mRl = (RelativeLayout) contentView.findViewById(R.id.rl);
         hideAndroSoftInput(activity);
         popWnd = new PopupWindow(mActivity);
         popWnd.setContentView(contentView);
@@ -60,11 +58,9 @@ public class KeyBoardViewHelper implements KeyboardView.OnKeyboardActionListener
         popWnd.setClippingEnabled(true);
         popWnd.setBackgroundDrawable(new ColorDrawable(0x000000));
         popWnd.setAnimationStyle(R.style.contextMenuAnim);
+        //部分手机加上这个参数才会有阴影显示
+        activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
         initKeyBoardView();
-    }
-
-    private void setBackground() {
-        mRl.setBackgroundColor(0x66000000);
     }
 
     private void initKeyBoardView() {
@@ -97,7 +93,7 @@ public class KeyBoardViewHelper implements KeyboardView.OnKeyboardActionListener
     public void closeKeyboard() {
         if (null != popWnd) {
             popWnd.dismiss();
-            backgroundAlpha(0f,0);
+            backgroundAlpha(0f, 0);
         }
     }
 
@@ -172,8 +168,11 @@ public class KeyBoardViewHelper implements KeyboardView.OnKeyboardActionListener
                 if (sb.length() == 0) {
                     cursor = 0;
                 }
-                sb.insert(cursor, (char) primaryCode);
-                cursor++;
+                //限制输入两位小数
+                if (sb.indexOf(".") == -1 || (sb.length() - sb.lastIndexOf(".") - 1) < 2) {
+                    sb.insert(cursor, (char) primaryCode);
+                    cursor++;
+                }
                 break;
         }
         mEt.setText(sb);
@@ -230,7 +229,7 @@ public class KeyBoardViewHelper implements KeyboardView.OnKeyboardActionListener
             public void onAnimationUpdate(ValueAnimator animation) {
                 float f = (float) animation.getAnimatedValue();
                 Log.d(TAG, "onAnimationUpdate: " + f);
-                lp.alpha = 1-f; //0.0-1.0
+                lp.alpha = 1 - f; //0.0-1.0
                 mActivity.getWindow().setAttributes(lp);
                 if (f == bgAlpha) {
                     animation.removeAllUpdateListeners();
