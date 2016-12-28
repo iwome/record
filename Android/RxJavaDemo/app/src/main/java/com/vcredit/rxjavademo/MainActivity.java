@@ -1,12 +1,16 @@
 package com.vcredit.rxjavademo;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 
 import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
+import rx.functions.Action0;
+import rx.functions.Action1;
 
 //http://gank.io/post/560e15be2dca930e00da1083
 public class MainActivity extends AppCompatActivity {
@@ -99,7 +103,10 @@ public class MainActivity extends AppCompatActivity {
         Observable observable2 = Observable.from(array);
 
         /**
-         * 
+         * 调用subscribe() 核心代码：
+         * subscriber.onStart(); 这个方法在前面已经介绍过，是一个可选的准备方法。
+         * onSubscribe.call(subscriber); 事件发送的逻辑开始运行。从这也可以看出，在 RxJava 中， Observable 并不是在创建的时候就立即开始发送事件，而是在它被订阅的时候，即当 subscribe() 方法执行的时候。
+         * return subscriber; 将传入的 Subscriber 作为 Subscription 返回。这是为了方便 unsubscribe()
          */
 
         //订阅,6种写法等价
@@ -107,8 +114,54 @@ public class MainActivity extends AppCompatActivity {
         observable1.subscribe(observer);//observable1.subscribe(subscriber);
         observable2.subscribe(observer);//observable2.subscribe(subscriber);
 
+        /**
+         * 除了 subscribe(Observer) 和 subscribe(Subscriber) ，subscribe() 还支持不完整定义的回调，RxJava 会自动根据定义创建出 Subscriber 。形式如下：
+         * 简单解释一下这段代码中出现的 Action1 和 Action0。 Action0 是 RxJava 的一个接口，它只有一个方法 call()，这个方法是无参无返回值的；
+         * 由于 onCompleted() 方法也是无参无返回值的，因此 Action0 可以被当成一个包装对象，将 onCompleted() 的内容打包起来将自己作为一个参数传入 subscribe() 以实现不完整定义的回调。
+         * 这样其实也可以看做将 onCompleted() 方法作为参数传进了 subscribe()，相当于其他某些语言中的『闭包』。
+         * Action1 也是一个接口，它同样只有一个方法 call(T param)，这个方法也无返回值，但有一个参数；与 Action0 同理，由于 onNext(T obj) 和 onError(Throwable error) 也是单参数无返回值的，
+         * 因此 Action1 可以将 onNext(obj) 和 onError(error) 打包起来传入 subscribe() 以实现不完整定义的回调。事实上，虽然 Action0 和 Action1 在 API 中使用最广泛，
+         * 但 RxJava 是提供了多个 ActionX 形式的接口 (例如 Action2, Action3) 的，它们可以被用以包装不同的无返回值的方法。
+         * 注：正如前面所提到的，Observer 和 Subscriber 具有相同的角色，而且 Observer 在 subscribe() 过程中最终会被转换成 Subscriber 对象，因此，
+         * 从这里开始，后面的描述我将用 Subscriber 来代替 Observer ，这样更加严谨。
+         */
+
+        Action1<String> onNextAction = new Action1<String>() {
+            //onNext()
+            @Override
+            public void call(String s) {
+                Log.d(TAG, "call: " + s);
+            }
+        };
+
+        Action1<Throwable> onErrorAction = new Action1<Throwable>() {
+            //onError()
+            @Override
+            public void call(Throwable throwable) {
+
+            }
+        };
+
+        Action0 onCompletedAction = new Action0() {
+            //onCompleted()
+            @Override
+            public void call() {
+                Log.d(TAG, "call: completed");
+            }
+        };
+
+        // 自动创建 Subscriber ，并使用 onNextAction 来定义 onNext()
+        observable.subscribe(onNextAction);
+        // 自动创建 Subscriber ，并使用 onNextAction 和 onErrorAction 来定义 onNext() 和 onError()
+        observable.subscribe(onNextAction, onErrorAction);
+        // 自动创建 Subscriber ，并使用 onNextAction、 onErrorAction 和 onCompletedAction 来定义 onNext()、 onError() 和 onCompleted()
+        observable.subscribe(onNextAction, onErrorAction, onCompletedAction);
 
 
+    }
 
+    public void onBtnClick(View view) {
+        Intent intent = new Intent(MainActivity.this, ExampleActivity.class);
+        startActivity(intent);
     }
 }
