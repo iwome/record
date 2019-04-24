@@ -1,0 +1,58 @@
+apply plugin: 'com.android.application'
+apply plugin: 'com.bangbangqiu.learnPlugin'
+
+android {
+    compileSdkVersion 28
+    defaultConfig {
+        applicationId "com.example.bangbangqiu.myapplication"
+        minSdkVersion 15
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        javaCompileOptions { annotationProcessorOptions { includeCompileClasspath = true } }
+    }
+
+    compileOptions {
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+    }
+}
+
+//这个语法看不懂，我猜测在创建变量的时候 project.extensions.create('pluginExt', PluginExtension)
+//会创建一个闭包函数 pluginExt(Closable ..)，并且给闭包函数内部创建像通的字段
+pluginExt {
+    println "$param1"
+    param1 = 'app param1'
+    param2 = 'app param2'
+    nestExt {
+        nestParam1 = 'adsfsdfsdf'
+        nestParam2 = '1231564854'
+    }
+}
+
+testCreateJavaConfig {
+    str = "动态生成java类的字符串"
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    api project(':annotion')
+}

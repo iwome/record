@@ -1,0 +1,33 @@
+apply plugin: 'maven'
+apply plugin: 'groovy'
+
+repositories {
+    mavenCentral()
+    jcenter()
+    maven {
+        url "https://maven.google.com"
+    }
+    google()
+}
+
+dependencies {
+    //    implementation 'org.ow2.asm:asm:6.0'
+    implementation 'com.android.tools.build:gradle:3.1.4'
+    implementation 'javassist:javassist:3.12.1.GA'
+    implementation 'commons-io:commons-io:2.6'
+    implementation 'com.android.tools.build:transform-api:2.0.0-deprecated-use-gradle-api'
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation files('libs/annotion.jar')
+}
+
+//定义依赖uri,发布仓库
+group = "com.bangbangqiu.learnPlugin"
+version = "1.0.0"
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: uri('../repo'))
+        }
+    }
+}
