@@ -74,7 +74,7 @@ class PluginImpl implements Plugin<Project> {
 
     static def void createJavaTest(variant, config) {
         //要生成的内容
-        def content = """package com.example.bangbangqiu.myapplication;
+        def content = """package com.a.gradlepluginmaidian;
 /**
   * Created by bbq on 2017/8/30.
   */

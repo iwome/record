@@ -4,12 +4,11 @@ apply plugin: 'com.bangbangqiu.learnPlugin'
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "com.example.bangbangqiu.myapplication"
+        applicationId "com.a.gradlepluginmaidian"
         minSdkVersion 15
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         javaCompileOptions { annotationProcessorOptions { includeCompileClasspath = true } }
     }
 

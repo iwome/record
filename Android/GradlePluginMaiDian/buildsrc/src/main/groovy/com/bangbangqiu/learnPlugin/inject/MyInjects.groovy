@@ -2,6 +2,7 @@ package com.bangbangqiu.learnPlugin.inject
 
 import com.a.lib.DataContent
 import com.a.lib.DataName
+import com.android.build.gradle.AppExtension
 import javassist.ClassPool
 import javassist.CtClass
 import javassist.CtMethod
@@ -19,13 +20,15 @@ public class MyInjects {
         System.println("classpath ")
         //引入android.os.Bundle包，因为onCreate方法参数里有Bundle
         pool.importPackage("android.os.Bundle")
-
+        def appId = project.extensions.getByType(AppExtension).getDefaultConfig().applicationId
+        def appIdPath = appId.replaceAll(/\./, '\\\\')
+        println("appId :${appId} appPath ${appIdPath}")
         File dir = new File(path)
         if (dir.isDirectory()) {
             //遍历文件夹
             dir.eachFileRecurse { File file ->
                 println("filePath = ${file.absolutePath}")
-                if (file.absolutePath.contains("myapplication")
+                if (file.absolutePath.contains(appIdPath)
                         && file.absolutePath.contains(".class")
                         && !file.absolutePath.contains("R\$")
                         && !file.absolutePath.contains("R.class")
