@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_learn/page/secondPage.dart';
+import 'package:english_words/english_words.dart';
 
 void main() => runApp(MyApp());
 
@@ -21,6 +23,10 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: MyHomePage(title: 'Flutter Demo Home Page'),
+      routes: {
+        //命名路由，缺点：不可以传参
+//        "new_page": (context) => NewRoute()
+      },
     );
   }
 }
@@ -98,6 +104,21 @@ class _MyHomePageState extends State<MyHomePage> {
               '$_counter',
               style: Theme.of(context).textTheme.display1,
             ),
+            FlatButton(
+              child: Text("open new route"),
+              textColor: Colors.blue,
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    new MaterialPageRoute(
+                        builder: (context) {
+                          return NewRoute("Flutter Home Page Param");
+                        },
+                        fullscreenDialog: false));
+//                Navigator.pushNamed(context, "new_page");
+              },
+            ),
+            RandomWordsWidget()
           ],
         ),
       ),
@@ -106,6 +127,17 @@ class _MyHomePageState extends State<MyHomePage> {
         tooltip: 'Increment',
         child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
+}
+
+class RandomWordsWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final wordPair = WordPair.random();
+    return Padding(
+      padding: EdgeInsets.all(8.0),
+      child: Text(wordPair.toString()),
     );
   }
 }

@@ -33,8 +33,9 @@ class Rectangle {
   void nameMethod({String a, int b}) {}
 
   //可选位置参数 []表示
+  //可选参数可以有默认值
   //命名和位置参数区别，前者可放在前面，后者只能放在最后，所以前者要命名后者无需
-  void positionMethod(String a, int b, [int c, int d]) {}
+  void positionMethod(String a, int b, [int c = 9, int d]) {}
 
   @override
   String toString() =>
