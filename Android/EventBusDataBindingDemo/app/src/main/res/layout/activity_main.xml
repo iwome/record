@@ -7,9 +7,15 @@
 
         <import type="com.a.dao.MainData" />
 
+        <import type="com.a.eventbusdatabindingdemo.MainActivity.ClickEvent" />
+
         <variable
             name="mainData"
             type="MainData" />
+
+        <variable
+            name="clickEvent"
+            type="ClickEvent" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -33,11 +39,8 @@
             android:id="@+id/tv_engName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
+            android:padding="8dp"
+            android:onClick="@{()->clickEvent.clickEvent()}"
             android:text="@{mainData.engName}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -57,6 +60,21 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_name" />
+
+        <EditText
+            android:id="@+id/et_input"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="@={mainData.name}"
+            app:layout_constraintBottom_toTopOf="@+id/tv_name"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_engName" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,6 +2,7 @@ package com.a.eventbusdatabindingdemo;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.widget.Toast;
 
 import com.a.dao.MainData;
 import com.a.eventbusdatabindingdemo.databinding.ActivityMainBinding;
@@ -19,9 +20,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         dataBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         MainData mainData = new MainData();
-        mainData.engName = "AngleBaby";
-        mainData.name = "翠花";
+        mainData.setEngName("AngleBaby");
+        mainData.setName("翠花");
         dataBinding.setMainData(mainData);
+        dataBinding.setClickEvent(new ClickEvent());
         postDelay(mainData);
 
         setFragment();
@@ -35,10 +37,16 @@ public class MainActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                mainData.engName = "AngleBaby" + Math.random();
-                dataBinding.setMainData(mainData);
+                mainData.engName.set("AngleBaby" + Math.random());
                 postDelay(mainData);
             }
         }, 1000);
+    }
+
+
+    public class ClickEvent {
+        public void clickEvent() {
+            Toast.makeText(MainActivity.this, "click me", Toast.LENGTH_SHORT).show();
+        }
     }
 }
